@@ -1,16 +1,16 @@
 <!-- Generated from .project/PROJECT.md by the engine — do not run `impeccable init`, which would interview a user who isn't here. Edit .project/PROJECT.md; this file is regenerated from it. -->
-# Registro de despacho de aves
+# Registro Despacho Manitou jaula
 
 **Platform:** Responsive web — Next.js, React, Tailwind. shadcn/ui and lucide are installed and available; the direction decides whether they fit or whether this surface needs its own vocabulary.
 **Task mode:** Operate (pass as `--mode operate` to any script)
 
 ## What this is
 
-App de campo en español para registrar, consultar y personalizar despachos de aves.
+App de campo en español para registrar y consultar despachos de aves en jaula.
 
 ## What it enables
 
-Permitir que el equipo avícola registre despachos desde el celular, adapte los campos a su operación y conserve sus datos sin conexión.
+Permitir que el equipo avícola registre despachos Manitou desde el celular, adapte los campos a su operación y conserve sus datos sin conexión.
 
 ## Primary user
 
@@ -18,11 +18,11 @@ Personal de despacho, transporte y supervisión de una empresa avícola peruana.
 
 ## What exists today
 
-El formulario se genera desde un esquema editable con secciones y campos personalizados. Guarda registros en el dispositivo, permite validación de datos peruanos, edición, detalle, resumen por plantel, búsqueda, filtros y exportación/importación de CSV y respaldos JSON. La interfaz tiene navegación móvil inferior y panel lateral de escritorio. La sincronización externa aún no está implementada.
+El formulario parte de una sección con 12 campos de despacho Manitou y sigue siendo editable. Guarda registros en el dispositivo, conserva fecha y plantel al registrar, permite detalle, edición, eliminación, resumen por plantel, búsqueda, filtros y exportación/importación de CSV y respaldos JSON. La interfaz tiene navegación móvil inferior y panel lateral de escritorio, e indica conexión o modo sin conexión. La sincronización externa no está implementada.
 
 ## Brand commitments & durable constraints
 
-Interfaz completamente en español. Prioridad móvil y operación sin conexión. Esquema en localStorage; al renombrar o quitar campos, los registros existentes conservan sus etiquetas y valores guardados. No presentar la sincronización externa como disponible hasta implementarla.
+Interfaz completamente en español. Prioridad móvil y operación sin conexión. Esquema en `despachos_manitou_schema_v1` y registros en `despachos_manitou_v1`; al renombrar o quitar campos, los registros existentes conservan sus etiquetas y valores guardados. No presentar la sincronización externa como disponible hasta implementarla.
 
 - **This project already HAS a committed visual world — do NOT offer a design picker.** `.project/DESIGN_SYSTEM.md` records a direction someone decided on, and the code, tokens and components are built around it. Read it, inherit it, and make the requested change inside it. Dealing six alternative worlds here offers to throw away a working design system nobody asked you to replace.
 - **Tailoring is not redesigning.** "Make it about my business", new copy, a different logo, swapped imagery, a brand colour — all of that lands INSIDE the committed world. Change what was asked for and leave the direction alone.
@@ -37,7 +37,7 @@ Interfaz completamente en español. Prioridad móvil y operación sin conexión.
 
 ## Positioning
 
-App de campo en español para registrar, consultar y personalizar despachos de aves.
+App de campo en español para registrar y consultar despachos de aves en jaula.
 
 ## Operating Context
 
@@ -45,7 +45,7 @@ Responsive web, built unattended in one pass. Task mode: Operate.
 
 ## Evidence on Hand
 
-El formulario se genera desde un esquema editable con secciones y campos personalizados. Guarda registros en el dispositivo, permite validación de datos peruanos, edición, detalle, resumen por plantel, búsqueda, filtros y exportación/importación de CSV y respaldos JSON. La interfaz tiene navegación móvil inferior y panel lateral de escritorio. La sincronización externa aún no está implementada.
+El formulario parte de una sección con 12 campos de despacho Manitou y sigue siendo editable. Guarda registros en el dispositivo, conserva fecha y plantel al registrar, permite detalle, edición, eliminación, resumen por plantel, búsqueda, filtros y exportación/importación de CSV y respaldos JSON. La interfaz tiene navegación móvil inferior y panel lateral de escritorio, e indica conexión o modo sin conexión. La sincronización externa no está implementada.
 
 ## Product Principles
 

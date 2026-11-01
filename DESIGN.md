@@ -1,6 +1,6 @@
 ---
-name: "Registro de despacho de aves"
-description: "App de campo en español para registrar, consultar y personalizar despachos de aves."
+name: "Registro Despacho Manitou jaula"
+description: "App de campo en español para registrar y consultar despachos de aves en jaula."
 colors:
   background: "hsl(156 24% 97%)"
   foreground: "hsl(174 31% 13%)"

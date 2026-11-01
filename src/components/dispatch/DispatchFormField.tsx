@@ -12,10 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldShell } from "@/components/dispatch/FieldShell";
-import {
-  normalizePlate,
-  type DispatchField,
-} from "@/lib/dispatch-model";
+import type { DispatchField } from "@/lib/dispatch-model";
 
 interface DispatchFormFieldProps {
   field: DispatchField;
@@ -59,29 +56,16 @@ export function DispatchFormField({
     );
   }
 
-  if (field.tipo === "auto") {
-    return (
-      <FieldShell field={field} inputId={id} error={error}>
-        <Input id={id} value={textValue} readOnly aria-readonly="true" className={`${fieldClass} bg-muted/70 font-semibold text-foreground`} />
-      </FieldShell>
-    );
-  }
-
   if (field.tipo === "select") {
     return (
       <FieldShell field={field} inputId={id} error={error}>
-        <Select
-          value={textValue || null}
-          onValueChange={(nextValue) => onChange(field.id, nextValue ?? "")}
-        >
+        <Select value={textValue || null} onValueChange={(nextValue) => onChange(field.id, nextValue ?? "")}>
           <SelectTrigger id={id} className={`h-12 w-full bg-card text-base ${isInvalid ? "border-destructive" : ""}`} aria-invalid={isInvalid}>
             <SelectValue placeholder="Selecciona una opción" />
           </SelectTrigger>
           <SelectContent>
             {field.opciones.map((option) => (
-              <SelectItem key={option} value={option}>
-                {option}
-              </SelectItem>
+              <SelectItem key={option} value={option}>{option}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -101,33 +85,19 @@ export function DispatchFormField({
           className={`min-h-28 resize-y text-base ${isInvalid ? "border-destructive focus-visible:ring-destructive/30" : ""}`}
           aria-invalid={isInvalid}
         />
-        {field.maxlength ? (
-          <p className="text-right text-xs text-muted-foreground">
-            {textValue.length} / {field.maxlength} caracteres
-          </p>
-        ) : null}
+        {field.maxlength ? <p className="text-right text-xs text-muted-foreground">{textValue.length} / {field.maxlength} caracteres</p> : null}
       </FieldShell>
     );
   }
 
-  const inputType =
-    field.tipo === "fecha"
-      ? "date"
-      : field.tipo === "hora"
-        ? "time"
-        : field.tipo === "numero" || field.tipo === "decimal"
-      ? "number"
-      : field.tipo === "email" || field.tipo === "telefono"
-        ? field.tipo === "telefono" ? "tel" : "email"
+  const inputType = field.tipo === "fecha"
+    ? "date"
+    : field.tipo === "hora"
+      ? "time"
+      : field.tipo === "numero" || field.tipo === "decimal"
+        ? "number"
         : "text";
-  const inputMode =
-    field.tipo === "ruc" || field.tipo === "dni" || field.tipo === "numero"
-      ? "numeric"
-      : field.tipo === "decimal"
-        ? "decimal"
-        : field.tipo === "telefono"
-          ? "tel"
-          : undefined;
+  const inputMode = field.tipo === "numero" ? "numeric" : field.tipo === "decimal" ? "decimal" : undefined;
 
   return (
     <FieldShell field={field} inputId={id} error={error}>
@@ -140,11 +110,6 @@ export function DispatchFormField({
         maxLength={field.maxlength}
         value={textValue}
         onChange={(event) => onChange(field.id, event.target.value)}
-        onBlur={(event) => {
-          if (field.tipo === "placa" && event.target.value) {
-            onChange(field.id, normalizePlate(event.target.value));
-          }
-        }}
         className={fieldClass}
         aria-invalid={isInvalid}
       />

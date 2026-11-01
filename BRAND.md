@@ -1,10 +1,10 @@
 ---
-name: "Registro de despacho de aves"
-slug: "registro-de-despacho-de-aves"
-one_liner: "App de campo en español para registrar, consultar y personalizar despachos de aves."
+name: "Registro Despacho Manitou jaula"
+slug: "registro-despacho-manitou-jaula"
+one_liner: "App de campo en español para registrar y consultar despachos de aves en jaula."
 audience: "Personal de despacho, transporte y supervisión de una empresa avícola peruana."
 value_props:
-  - "El formulario se genera desde un esquema editable con secciones y campos personalizados. Guarda registros en el dispositivo, permite validación de datos peruanos, edición, detalle, resumen por plantel, búsqueda, filtros y exportación/importación de CSV y respaldos JSON. La interfaz tiene navegación móvil inferior y panel lateral de escritorio. La sincronización externa aún no está implementada"
+  - "El formulario parte de una sección con 12 campos de despacho Manitou y sigue siendo editable. Guarda registros en el dispositivo, conserva fecha y plantel al registrar, permite detalle, edición, eliminación, resumen por plantel, búsqueda, filtros y exportación/importación de CSV y respaldos JSON. La interfaz tiene navegación móvil inferior y panel lateral de escritorio, e indica conexión o modo sin conexión. La sincronización externa no está implementada"
 palette:
   - "hsl(156 24% 97%)"
   - "hsl(174 31% 13%)"
@@ -29,7 +29,7 @@ proposed:
 
 ## What this is
 
-The brand facts Registro de despacho de aves itself settled: what it is called, what it says it does, who the brain says it is for, the tokens the shipped code was checked against, and the call-to-action text on its own landing page. The values above are normative and readable without a model.
+The brand facts Registro Despacho Manitou jaula itself settled: what it is called, what it says it does, who the brain says it is for, the tokens the shipped code was checked against, and the call-to-action text on its own landing page. The values above are normative and readable without a model.
 
 `proposed:` is the exception — it is read off the committed visual direction and offered as a starting point, not recorded as a decision.
 

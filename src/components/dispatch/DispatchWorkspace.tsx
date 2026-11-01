@@ -67,6 +67,7 @@ import { RecordDetails } from "@/components/dispatch/RecordDetails";
 import {
   DEFAULT_SCHEMA,
   FIELD_TYPE_LABELS,
+  LEGACY_RECORDS_STORAGE_KEY,
   RECORDS_STORAGE_KEY,
   SCHEMA_STORAGE_KEY,
   computeValues,
@@ -74,8 +75,6 @@ import {
   isDispatchSchema,
   localDateValue,
   makeStableId,
-  nextDispatchNumber,
-  normalizePlate,
   sortSchema,
   validateField,
   type DispatchField,
@@ -112,32 +111,24 @@ const NAV_ITEMS: Array<{
   description: string;
   icon: typeof ClipboardList;
 }> = [
-  { id: "nuevo", label: "Nuevo despacho", description: "Registrar", icon: ClipboardList },
+  { id: "nuevo", label: "Nuevo registro", description: "Registrar", icon: ClipboardList },
   { id: "registros", label: "Registros", description: "Historial", icon: FileSpreadsheet },
   { id: "resumen", label: "Resumen", description: "Indicadores", icon: ListChecks },
   { id: "campos", label: "Campos", description: "Personalizar", icon: Settings2 },
 ];
 
-const TAB_COPY: Record<WorkspaceTab, { eyebrow: string; title: string; description: string }> = {
+const TAB_COPY: Record<WorkspaceTab, { eyebrow: string }> = {
   nuevo: {
-    eyebrow: "Control de campo",
-    title: "Registro de Despacho de Aves",
-    description: "Control de despachos y transporte",
+    eyebrow: "Nuevo registro",
   },
   registros: {
-    eyebrow: "Historial de operaciones",
-    title: "Registros",
-    description: "Consulta, corrige o exporta tus despachos guardados.",
+    eyebrow: "Historial de registros",
   },
   resumen: {
-    eyebrow: "Vista de operación",
-    title: "Resumen",
-    description: "Una lectura rápida de los despachos registrados en este dispositivo.",
+    eyebrow: "Resumen de operación",
   },
   campos: {
-    eyebrow: "Tu formato, tus reglas",
-    title: "Campos del formulario",
-    description: "Adapta el registro a la forma en que trabaja tu equipo.",
+    eyebrow: "Personaliza el formulario",
   },
 };
 
@@ -147,7 +138,6 @@ function copySchema(schema: DispatchSchema): DispatchSchema {
     campos: schema.campos.map((field) => ({
       ...field,
       opciones: [...field.opciones],
-      calculo: field.calculo ? { ...field.calculo } : undefined,
     })),
   };
 }
@@ -202,6 +192,37 @@ function formatNumber(value: number): string {
   return new Intl.NumberFormat("es-PE").format(value);
 }
 
+function totalBirds(values: DispatchValues): number {
+  return (Number(values.varones) || 0) + (Number(values.mujeres) || 0);
+}
+
+function migrateLegacyRecords(records: DispatchRecord[]): DispatchRecord[] {
+  const legacyIds: Record<string, string[]> = {
+    fecha: ["fecha"],
+    plantel: ["plantel"],
+    galpon: ["galpon", "galpon-lote"],
+    placa: ["placa", "placa-camion"],
+    grupo: ["grupo"],
+    coordinador: ["coordinador", "responsable"],
+    varones: ["varones", "machos"],
+    mujeres: ["mujeres", "hembras"],
+    jabas: ["jabas"],
+    densidad: ["densidad"],
+    "estiba-inicio": ["estiba-inicio"],
+    "estiba-termino": ["estiba-termino"],
+  };
+  const labels = Object.fromEntries(DEFAULT_SCHEMA.campos.map((field) => [field.id, field.etiqueta]));
+
+  return records.map((record) => {
+    const valores: DispatchValues = {};
+    Object.entries(legacyIds).forEach(([fieldId, candidates]) => {
+      const value = candidates.map((id) => record.valores[id]).find((item) => typeof item === "string");
+      if (typeof value === "string") valores[fieldId] = value;
+    });
+    return { ...record, estado_sync: "pendiente", valores, etiquetas: labels };
+  });
+}
+
 export function DispatchWorkspace() {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("nuevo");
   const [schema, setSchema] = useState<DispatchSchema>(() => copySchema(DEFAULT_SCHEMA));
@@ -242,7 +263,13 @@ export function DispatchWorkspace() {
     }
 
     try {
-      storedRecords = getStoredRecords(JSON.parse(localStorage.getItem(RECORDS_STORAGE_KEY) ?? "[]"));
+      const currentRecords = localStorage.getItem(RECORDS_STORAGE_KEY);
+      if (currentRecords !== null) {
+        storedRecords = getStoredRecords(JSON.parse(currentRecords));
+      } else {
+        const legacyRecords = localStorage.getItem(LEGACY_RECORDS_STORAGE_KEY);
+        storedRecords = migrateLegacyRecords(getStoredRecords(JSON.parse(legacyRecords ?? "[]")));
+      }
     } catch {
       storedRecords = [];
     }
@@ -252,7 +279,7 @@ export function DispatchWorkspace() {
     const lastPlantel = [...storedRecords]
       .sort((first, second) => second.creado_en.localeCompare(first.creado_en))
       .find((record) => typeof record.valores.plantel === "string")?.valores.plantel;
-    setFormValues(createInitialValues(storedRecords, typeof lastPlantel === "string" ? lastPlantel : undefined));
+    setFormValues(createInitialValues(typeof lastPlantel === "string" ? lastPlantel : undefined));
     setOnline(navigator.onLine);
     setReady(true);
 
@@ -289,10 +316,10 @@ export function DispatchWorkspace() {
       .filter((record) => plantelFilter === "all" || String(record.valores.plantel ?? "") === plantelFilter)
       .filter((record) => {
         if (!query) return true;
-        return Object.entries(record.valores).some(([id, value]) => {
-          const label = record.etiquetas[id] ?? "";
-          return `${label} ${String(value)}`.toLocaleLowerCase("es").includes(query);
-        });
+        const searchable = ["plantel", "galpon", "placa", "coordinador", "grupo"]
+          .map((id) => String(record.valores[id] ?? ""))
+          .join(" ");
+        return searchable.toLocaleLowerCase("es").includes(query);
       })
       .sort((first, second) => second.creado_en.localeCompare(first.creado_en));
   }, [plantelFilter, records, searchText]);
@@ -306,25 +333,34 @@ export function DispatchWorkspace() {
 
   const summary = useMemo(() => {
     const today = localDateValue();
-    const byPlantel = new Map<string, { despachos: number; aves: number }>();
+    const byPlantel = new Map<string, { registros: number; varones: number; mujeres: number; aves: number }>();
+    let totalVarones = 0;
+    let totalMujeres = 0;
     let totalAves = 0;
-    let todayAves = 0;
+    let todayRecords = 0;
 
     records.forEach((record) => {
-      const birds = Number(record.valores["total-aves"] ?? 0) || 0;
+      const varones = Number(record.valores.varones ?? 0) || 0;
+      const mujeres = Number(record.valores.mujeres ?? 0) || 0;
+      const birds = varones + mujeres;
       const plantel = String(record.valores.plantel ?? "Sin plantel");
+      totalVarones += varones;
+      totalMujeres += mujeres;
       totalAves += birds;
-      if (record.valores.fecha === today) todayAves += birds;
-      const current = byPlantel.get(plantel) ?? { despachos: 0, aves: 0 };
-      current.despachos += 1;
+      if (record.valores.fecha === today) todayRecords += 1;
+      const current = byPlantel.get(plantel) ?? { registros: 0, varones: 0, mujeres: 0, aves: 0 };
+      current.registros += 1;
+      current.varones += varones;
+      current.mujeres += mujeres;
       current.aves += birds;
       byPlantel.set(plantel, current);
     });
 
     return {
+      totalVarones,
+      totalMujeres,
       totalAves,
-      todayAves,
-      pendientes: records.filter((record) => record.estado_sync !== "sincronizado").length,
+      todayRecords,
       byPlantel: [...byPlantel.entries()]
         .map(([plantel, values]) => ({ plantel, ...values }))
         .sort((first, second) => second.aves - first.aves),
@@ -349,13 +385,7 @@ export function DispatchWorkspace() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const normalizedValues = { ...formValues };
-    sortedSchema.campos.forEach((field) => {
-      if (field.tipo === "placa" && typeof normalizedValues[field.id] === "string") {
-        normalizedValues[field.id] = normalizePlate(String(normalizedValues[field.id]));
-      }
-    });
-    const latestValues = computeValues(sortedSchema.campos, normalizedValues);
+    const latestValues = computeValues(sortedSchema.campos, formValues);
     const nextErrors: Record<string, string> = {};
     sortedSchema.campos.forEach((field) => {
       const error = validateField(field, latestValues[field.id]);
@@ -395,7 +425,7 @@ export function DispatchWorkspace() {
             : record,
         ),
       );
-      showToast("Despacho actualizado", `${String(latestValues["numero-despacho"] ?? existing.id)} quedó guardado.`);
+      showToast("Registro actualizado", "Los cambios quedaron guardados en este dispositivo.");
     } else {
       const newRecord: DispatchRecord = {
         id: crypto.randomUUID(),
@@ -405,16 +435,12 @@ export function DispatchWorkspace() {
         etiquetas: labels,
       };
       setRecords((current) => [newRecord, ...current]);
-      showToast("Despacho guardado", `${String(latestValues["numero-despacho"] ?? nextDispatchNumber(records))} quedó guardado en este dispositivo.`);
+      showToast("Registro guardado", "El registro quedó guardado en este dispositivo.");
     }
 
     const plantel = typeof latestValues.plantel === "string" ? latestValues.plantel : undefined;
     const fecha = typeof latestValues.fecha === "string" ? latestValues.fecha : undefined;
-    setFormValues(createInitialValues(
-      editingRecordId ? records : [...records, { id: crypto.randomUUID(), creado_en: now.toISOString(), estado_sync: "pendiente", valores: latestValues, etiquetas: labels }],
-      plantel,
-      fecha,
-    ));
+    setFormValues(createInitialValues(plantel, fecha));
     setFieldErrors({});
     setEditingRecordId(null);
     setActiveTab("nuevo");
@@ -432,7 +458,7 @@ export function DispatchWorkspace() {
     setEditingRecordId(null);
     const plantel = typeof formValues.plantel === "string" ? formValues.plantel : undefined;
     const fecha = typeof formValues.fecha === "string" ? formValues.fecha : undefined;
-    setFormValues(createInitialValues(records, plantel, fecha));
+    setFormValues(createInitialValues(plantel, fecha));
     setFieldErrors({});
     showToast("Edición cancelada", "El registro original no se modificó.", "info");
   }
@@ -472,7 +498,6 @@ export function DispatchWorkspace() {
           .filter((item) => item.seccion_id === field.seccion_id)
           .reduce((maximum, item) => Math.max(maximum, item.orden), -1) + 1,
       opciones: [...field.opciones],
-      calculo: field.calculo ? { ...field.calculo } : undefined,
     };
     setSchema((current) => ({ ...current, campos: [...current.campos, nextField] }));
     showToast("Campo duplicado", "Puedes cambiar su nombre y configuración.");
@@ -557,43 +582,11 @@ export function DispatchWorkspace() {
     }
     if (confirmation.type === "field") {
       const removed = sortedSchema.campos.find((field) => field.id === confirmation.id);
-      const dependents = sortedSchema.campos.filter(
-        (field) =>
-          field.tipo === "auto" &&
-          (field.calculo?.campo_a === confirmation.id || field.calculo?.campo_b === confirmation.id),
-      );
-      if (dependents.length > 0) {
-        setConfirmation(null);
-        showToast(
-          "Este campo alimenta un cálculo",
-          `Edita primero: ${dependents.map((field) => field.etiqueta).join(", ")}.`,
-          "error",
-        );
-        return;
-      }
       setSchema((current) => ({ ...current, campos: current.campos.filter((field) => field.id !== confirmation.id) }));
       showToast("Campo eliminado", removed ? `Los registros anteriores conservan “${removed.etiqueta}”.` : "Los registros anteriores conservan sus datos.", "info");
     }
     if (confirmation.type === "section") {
       const removed = sortedSchema.secciones.find((section) => section.id === confirmation.id);
-      const sectionFieldIds = new Set(
-        sortedSchema.campos.filter((field) => field.seccion_id === confirmation.id).map((field) => field.id),
-      );
-      const outsideDependents = sortedSchema.campos.filter(
-        (field) =>
-          field.tipo === "auto" &&
-          !sectionFieldIds.has(field.id) &&
-          (sectionFieldIds.has(field.calculo?.campo_a ?? "") || sectionFieldIds.has(field.calculo?.campo_b ?? "")),
-      );
-      if (outsideDependents.length > 0) {
-        setConfirmation(null);
-        showToast(
-          "Esta sección alimenta otros cálculos",
-          `Edita primero: ${outsideDependents.map((field) => field.etiqueta).join(", ")}.`,
-          "error",
-        );
-        return;
-      }
       setSchema((current) => ({
         secciones: current.secciones.filter((section) => section.id !== confirmation.id),
         campos: current.campos.filter((field) => field.seccion_id !== confirmation.id),
@@ -609,7 +602,7 @@ export function DispatchWorkspace() {
   }
 
   function exportSchema() {
-    makeDownload(JSON.stringify(schema, null, 2), "application/json;charset=utf-8", "esquema-despacho-aves.json");
+    makeDownload(JSON.stringify(schema, null, 2), "application/json;charset=utf-8", "esquema-despacho-manitou.json");
     showToast("Esquema exportado", "Puedes importarlo en otro dispositivo.", "info");
   }
 
@@ -617,18 +610,34 @@ export function DispatchWorkspace() {
   makeDownload(
       JSON.stringify({ esquema: schema, registros: records }, null, 2),
       "application/json;charset=utf-8",
-      "respaldo-despacho-aves.json",
+      "respaldo-despacho-manitou.json",
     );
     showToast("Respaldo descargado", `${records.length} registros incluidos.`, "info");
   }
 
   function exportCsv() {
-    const orderedFields = sortedSchema.campos;
+    const columns = [
+      ["fecha", "Fecha"],
+      ["plantel", "Plantel"],
+      ["galpon", "Galpón"],
+      ["placa", "Placa"],
+      ["grupo", "Grupo"],
+      ["coordinador", "Coordinador"],
+      ["varones", "Varones"],
+      ["mujeres", "Mujeres"],
+      ["jabas", "Jabas"],
+      ["densidad", "Densidad"],
+      ["estiba-inicio", "Estiba inicio"],
+      ["estiba-termino", "Estiba término"],
+    ] as const;
     const rows = [
-      orderedFields.map((field) => quoteCsv(field.etiqueta)).join(","),
-      ...visibleRecords.map((record) => orderedFields.map((field) => quoteCsv(record.valores[field.id])).join(",")),
+      [...columns.map(([, label]) => quoteCsv(label)), quoteCsv("Total de aves")].join(","),
+      ...visibleRecords.map((record) => [
+        ...columns.map(([id]) => quoteCsv(record.valores[id])),
+        quoteCsv(totalBirds(record.valores)),
+      ].join(",")),
     ];
-    makeDownload(`\uFEFF${rows.join("\r\n")}`, "text/csv;charset=utf-8", "registros-despacho-aves.csv");
+    makeDownload(`\uFEFF${rows.join("\r\n")}`, "text/csv;charset=utf-8", "registros-despacho-manitou.csv");
     showToast("CSV descargado", `${visibleRecords.length} registros exportados.`, "info");
   }
 
@@ -654,8 +663,9 @@ export function DispatchWorkspace() {
         if (!parsed || typeof parsed !== "object") throw new Error("El archivo no tiene el formato de respaldo esperado.");
         const candidate = parsed as { esquema?: unknown; registros?: unknown };
         if (!Array.isArray(candidate.registros)) throw new Error("No encontramos una lista de registros en el respaldo.");
-        const incomingRecords = getStoredRecords(candidate.registros);
         const incomingSchema = isDispatchSchema(candidate.esquema) ? sortSchema(candidate.esquema) : undefined;
+        const parsedRecords = getStoredRecords(candidate.registros);
+        const incomingRecords = incomingSchema ? parsedRecords : migrateLegacyRecords(parsedRecords);
         setPendingBackup({ esquema: incomingSchema, registros: incomingRecords });
         setBackupDialogOpen(true);
       } catch (error) {
@@ -678,10 +688,9 @@ export function DispatchWorkspace() {
       });
       if (pendingBackup.esquema) setSchema(pendingBackup.esquema);
     }
-    const restoredRecords = mode === "replace"
-      ? pendingBackup.registros
-      : [...pendingBackup.registros, ...records];
-    setFormValues(createInitialValues(restoredRecords));
+    const restoredRecords = mode === "replace" ? pendingBackup.registros : [...pendingBackup.registros, ...records];
+    const lastPlantel = restoredRecords.find((record) => typeof record.valores.plantel === "string")?.valores.plantel;
+    setFormValues(createInitialValues(typeof lastPlantel === "string" ? lastPlantel : undefined));
     setPendingBackup(null);
     setBackupDialogOpen(false);
     showToast(mode === "replace" ? "Respaldo restaurado" : "Respaldo combinado", `${pendingBackup.registros.length} registros del archivo procesados.`);
@@ -695,9 +704,9 @@ export function DispatchWorkspace() {
 
   const confirmationContent = confirmation ? {
     record: {
-      title: "¿Eliminar este despacho?",
+      title: "¿Eliminar este registro?",
       description: "Se quitará de este dispositivo. Esta acción no se puede deshacer.",
-      action: "Eliminar despacho",
+      action: "Eliminar registro",
     },
     field: {
       title: "¿Eliminar este campo?",
@@ -724,8 +733,8 @@ export function DispatchWorkspace() {
             <Bird size={23} strokeWidth={1.8} />
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold tracking-tight">Despacho de aves</p>
-            <p className="truncate text-xs text-muted-foreground">Control de despacho</p>
+            <p className="truncate text-sm font-bold tracking-tight">Registro Despacho</p>
+            <p className="truncate text-xs text-muted-foreground">Manitou jaula</p>
           </div>
         </div>
 
@@ -767,8 +776,8 @@ export function DispatchWorkspace() {
           <div className="mx-auto flex min-h-[76px] w-full max-w-[1480px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-10">
             <div className="min-w-0">
               <p className="hidden text-[10px] font-bold uppercase tracking-[0.18em] text-primary sm:block">{currentTabCopy.eyebrow}</p>
-              <h1 className="truncate text-lg font-bold tracking-tight sm:mt-0.5 sm:text-xl">{currentTabCopy.title}</h1>
-              <p className="hidden text-sm text-muted-foreground sm:block">{currentTabCopy.description}</p>
+              <h1 className="truncate text-base font-bold tracking-tight sm:mt-0.5 sm:text-xl">Registro Despacho Manitou jaula</h1>
+              <p className="text-xs text-muted-foreground sm:text-sm">Control de despachos de jaula</p>
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <div className={`flex min-h-10 items-center gap-2 rounded-full border px-3 text-xs font-semibold ${online ? "border-primary/20 bg-primary/5 text-primary" : "border-destructive/20 bg-destructive/5 text-destructive"}`}>
@@ -789,28 +798,13 @@ export function DispatchWorkspace() {
         <main className="mx-auto w-full max-w-[1480px] flex-1 px-4 pb-28 pt-5 sm:px-6 sm:pb-12 sm:pt-7 lg:px-10">
           {activeTab === "nuevo" ? (
             <section className="mx-auto max-w-[1080px]">
-              <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-[14px] border border-primary/15 bg-primary/[0.045] p-4 sm:p-5">
-                <div className="flex min-w-0 items-start gap-3">
-                  <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
-                    <ClipboardList size={19} />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-semibold">{editingRecordId ? "Editando despacho" : "Listo para registrar"}</p>
-                    <p className="mt-0.5 text-sm text-muted-foreground">
-                      {editingRecordId ? "Actualiza los datos y guarda los cambios." : "Completa los datos del traslado. Los campos con * son obligatorios."}
-                    </p>
-                  </div>
-                </div>
+              <div className="mb-4 flex min-h-11 items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-muted-foreground">{editingRecordId ? "Editando registro" : "Completa los datos del despacho"}</p>
                 {editingRecordId ? (
                   <Button variant="outline" onClick={cancelRecordEdit} className="min-h-11 gap-2 bg-card">
                     <X size={16} /> Cancelar edición
                   </Button>
-                ) : (
-                  <span className="inline-flex min-h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-xs font-medium text-muted-foreground">
-                    <ShieldCheck size={15} className="text-primary" />
-                    {String(formValues["numero-despacho"] ?? nextDispatchNumber(records))}
-                  </span>
-                )}
+                ) : null}
               </div>
 
               {sortedSchema.secciones.length === 0 ? (
@@ -860,7 +854,7 @@ export function DispatchWorkspace() {
                   <div className="sticky bottom-[76px] z-10 -mx-1 rounded-[14px] border border-border/80 bg-background/95 p-2 shadow-[0_8px_24px_hsl(174_31%_13%/0.09)] backdrop-blur sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
                     <Button type="submit" className="min-h-14 w-full gap-2 rounded-[14px] text-base font-bold shadow-sm sm:w-auto sm:min-w-[240px]">
                       <CheckCircle2 size={19} />
-                      {editingRecordId ? "Guardar cambios" : "Guardar despacho"}
+                      {editingRecordId ? "Guardar cambios" : "Guardar registro"}
                     </Button>
                     <p className="mt-2 hidden text-xs text-muted-foreground sm:block">Se guarda en este dispositivo, incluso si no tienes conexión.</p>
                   </div>
@@ -969,7 +963,6 @@ export function DispatchWorkspace() {
                                   <p className="mt-1 text-xs text-muted-foreground">
                                     {FIELD_TYPE_LABELS[field.tipo]}
                                     {field.ayuda ? <span> · {field.ayuda}</span> : null}
-                                    {field.tipo === "auto" && field.calculo ? <span> · {field.calculo.operacion}: {sortedSchema.campos.find((item) => item.id === field.calculo?.campo_a)?.etiqueta ?? "dato"} {field.calculo.operacion === "division" ? "÷" : field.calculo.operacion === "promedio" ? "y" : "+"} {sortedSchema.campos.find((item) => item.id === field.calculo?.campo_b)?.etiqueta ?? "dato"}</span> : null}
                                   </p>
                                 </div>
                                 <div className="flex flex-wrap items-center gap-1.5">
@@ -1030,7 +1023,7 @@ export function DispatchWorkspace() {
                   <Input
                     value={searchText}
                     onChange={(event) => setSearchText(event.target.value)}
-                    placeholder="Buscar por cliente, despacho, placa…"
+                    placeholder="Buscar plantel, galpón, placa, coordinador o grupo…"
                     aria-label="Buscar registros"
                     className="h-12 bg-card pl-10 text-base"
                   />
@@ -1049,7 +1042,7 @@ export function DispatchWorkspace() {
 
               <div className="mb-3 flex items-center justify-between gap-3">
                 <p className="text-sm text-muted-foreground">
-                  <span className="font-bold text-foreground">{visibleRecords.length}</span> {visibleRecords.length === 1 ? "despacho encontrado" : "despachos encontrados"}
+                  <span className="font-bold text-foreground">{visibleRecords.length}</span> {visibleRecords.length === 1 ? "registro encontrado" : "registros encontrados"}
                 </p>
                 <div className="flex gap-2">
                   <Button variant="outline" onClick={exportCsv} className="min-h-10 gap-2 bg-card px-3 text-xs sm:text-sm">
@@ -1068,41 +1061,37 @@ export function DispatchWorkspace() {
               {visibleRecords.length === 0 ? (
                 <EmptyState
                   icon={FileSpreadsheet}
-                  title={records.length === 0 ? "Todavía no hay despachos" : "No encontramos coincidencias"}
-                  description={records.length === 0 ? "Cuando guardes un despacho, aparecerá aquí para consultarlo o editarlo." : "Prueba con otra búsqueda o quita el filtro de plantel."}
-                  actionLabel={records.length === 0 ? "Registrar despacho" : undefined}
+                  title={records.length === 0 ? "Todavía no hay registros" : "No encontramos coincidencias"}
+                  description={records.length === 0 ? "Cuando guardes un registro, aparecerá aquí para consultarlo o editarlo." : "Prueba con otra búsqueda o quita el filtro de plantel."}
+                  actionLabel={records.length === 0 ? "Registrar ahora" : undefined}
                   onAction={records.length === 0 ? () => setActiveTab("nuevo") : undefined}
                 />
               ) : (
                 <div className="grid gap-3 xl:grid-cols-2">
                   {visibleRecords.map((record) => {
-                    const date = String(record.valores.fecha ?? record.creado_en.slice(0, 10));
-                    const time = String(record.valores.hora ?? new Date(record.creado_en).toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit" }));
-                    const plantel = String(record.valores.plantel ?? "Sin plantel");
-                    const customer = String(record.valores.cliente ?? "Cliente sin nombre");
-                    const birds = Number(record.valores["total-aves"] ?? 0) || 0;
+                    const birds = totalBirds(record.valores);
                     return (
                       <article key={record.id} className="rounded-[16px] border border-border bg-card p-4 shadow-[0_2px_10px_hsl(174_31%_13%/0.035)] sm:p-5">
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <p className="font-bold">{String(record.valores["numero-despacho"] ?? "Despacho")}</p>
-                              <Badge variant="secondary" className={`h-6 border text-[10px] font-semibold ${record.estado_sync === "sincronizado" ? "border-primary/15 bg-primary/5 text-primary" : "border-chart-3/20 bg-chart-3/10 text-chart-3"}`}>
-                                {record.estado_sync === "sincronizado" ? "Sincronizado" : "Pendiente"}
-                              </Badge>
-                            </div>
-                            <p className="mt-1 text-sm text-muted-foreground">{formatDate(date)} · {time}</p>
+                            <p className="font-bold">{String(record.valores.plantel ?? "Sin plantel")}</p>
+                            <p className="mt-1 text-sm text-muted-foreground">{formatDate(String(record.valores.fecha ?? record.creado_en.slice(0, 10)))}</p>
                           </div>
                           <div className="rounded-xl bg-primary/5 px-3 py-2 text-right">
                             <p className="text-lg font-bold tabular-nums text-primary">{formatNumber(birds)}</p>
-                            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">aves</p>
+                            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Total de aves</p>
                           </div>
                         </div>
                         <div className="mt-4 grid gap-3 border-t border-border pt-4 sm:grid-cols-2">
-                          <InfoLine label="Plantel" value={plantel} />
-                          <InfoLine label="Cliente" value={customer} />
-                          <InfoLine label="Camión" value={String(record.valores["placa-camion"] ?? "—")} />
-                          <InfoLine label="Remolque" value={String(record.valores["placa-remolque"] ?? "—")} />
+                          <InfoLine label="Galpón" value={String(record.valores.galpon ?? "—")} />
+                          <InfoLine label="Placa" value={String(record.valores.placa ?? "—")} />
+                          <InfoLine label="Grupo" value={String(record.valores.grupo ?? "—")} />
+                          <InfoLine label="Coordinador" value={String(record.valores.coordinador ?? "—")} />
+                          <InfoLine label="Varones" value={String(record.valores.varones ?? "—")} />
+                          <InfoLine label="Mujeres" value={String(record.valores.mujeres ?? "—")} />
+                          <InfoLine label="Jabas" value={String(record.valores.jabas ?? "—")} />
+                          <InfoLine label="Densidad" value={String(record.valores.densidad ?? "—")} />
+                          <InfoLine label="Estiba" value={`${String(record.valores["estiba-inicio"] ?? "—")} – ${String(record.valores["estiba-termino"] ?? "—")}`} />
                         </div>
                         <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-4">
                           <Button variant="outline" onClick={() => setDetailRecord(record)} className="min-h-11 flex-1 gap-2 bg-card sm:flex-none">
@@ -1125,18 +1114,19 @@ export function DispatchWorkspace() {
 
           {activeTab === "resumen" ? (
             <section className="mx-auto max-w-[1200px]">
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                <MetricCard label="Despachos registrados" value={formatNumber(records.length)} hint="En este dispositivo" icon={ClipboardList} tone="green" />
-                <MetricCard label="Aves despachadas" value={formatNumber(summary.totalAves)} hint="Total acumulado" icon={Bird} tone="blue" />
-                <MetricCard label="Aves de hoy" value={formatNumber(summary.todayAves)} hint={formatDate(localDateValue())} icon={CheckCircle2} tone="gold" />
-                <MetricCard label="Pendientes" value={formatNumber(summary.pendientes)} hint="Guardados sin conexión" icon={FileDown} tone="slate" />
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                <MetricCard label="Total de registros" value={formatNumber(records.length)} hint="En este dispositivo" icon={ClipboardList} tone="green" />
+                <MetricCard label="Total de varones" value={formatNumber(summary.totalVarones)} hint="Todos los registros" icon={Bird} tone="blue" />
+                <MetricCard label="Total de mujeres" value={formatNumber(summary.totalMujeres)} hint="Todos los registros" icon={Bird} tone="gold" />
+                <MetricCard label="Total de aves" value={formatNumber(summary.totalAves)} hint="Varones + mujeres" icon={ListChecks} tone="slate" />
+                <MetricCard label="Registros de hoy" value={formatNumber(summary.todayRecords)} hint={formatDate(localDateValue())} icon={CheckCircle2} tone="green" />
               </div>
 
               <div className="mt-6 overflow-hidden rounded-[16px] border border-border bg-card shadow-[0_2px_10px_hsl(174_31%_13%/0.035)]">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
                   <div>
-                    <h2 className="font-bold">Despachos por plantel</h2>
-                    <p className="mt-1 text-sm text-muted-foreground">Ordenados por cantidad de aves.</p>
+                    <h2 className="font-bold">Registros por plantel</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">Ordenados de mayor a menor por total de aves.</p>
                   </div>
                   <Badge variant="outline" className="h-7 gap-1.5 px-2.5 text-xs"><MapPin size={13} />{summary.byPlantel.length} {summary.byPlantel.length === 1 ? "plantel" : "planteles"}</Badge>
                 </div>
@@ -1146,18 +1136,20 @@ export function DispatchWorkspace() {
                       <thead className="bg-muted/60 text-xs text-muted-foreground">
                         <tr>
                           <th scope="col" className="px-5 py-3 font-semibold">Plantel</th>
-                          <th scope="col" className="px-5 py-3 text-right font-semibold">Despachos</th>
-                          <th scope="col" className="px-5 py-3 text-right font-semibold">Aves</th>
-                          <th scope="col" className="px-5 py-3 text-right font-semibold">Proporción</th>
+                          <th scope="col" className="px-5 py-3 text-right font-semibold">Registros</th>
+                          <th scope="col" className="px-5 py-3 text-right font-semibold">Varones</th>
+                          <th scope="col" className="px-5 py-3 text-right font-semibold">Mujeres</th>
+                          <th scope="col" className="px-5 py-3 text-right font-semibold">Total de aves</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border">
                         {summary.byPlantel.map((row) => (
                           <tr key={row.plantel}>
                             <th scope="row" className="px-5 py-4 font-semibold">{row.plantel}</th>
-                            <td className="px-5 py-4 text-right tabular-nums">{formatNumber(row.despachos)}</td>
+                            <td className="px-5 py-4 text-right tabular-nums">{formatNumber(row.registros)}</td>
+                            <td className="px-5 py-4 text-right tabular-nums">{formatNumber(row.varones)}</td>
+                            <td className="px-5 py-4 text-right tabular-nums">{formatNumber(row.mujeres)}</td>
                             <td className="px-5 py-4 text-right font-bold tabular-nums">{formatNumber(row.aves)}</td>
-                            <td className="px-5 py-4 text-right tabular-nums text-muted-foreground">{summary.totalAves ? `${Math.round((row.aves / summary.totalAves) * 100)}%` : "—"}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -1166,8 +1158,8 @@ export function DispatchWorkspace() {
                 ) : (
                   <div className="px-5 py-12 text-center">
                     <p className="font-semibold">El resumen aparecerá aquí</p>
-                    <p className="mt-1 text-sm text-muted-foreground">Guarda tu primer despacho para empezar a ver los totales.</p>
-                    <Button onClick={() => setActiveTab("nuevo")} className="mt-4 min-h-11 gap-2"><Plus size={16} /> Registrar despacho</Button>
+                    <p className="mt-1 text-sm text-muted-foreground">Guarda tu primer registro para empezar a ver los totales.</p>
+                    <Button onClick={() => setActiveTab("nuevo")} className="mt-4 min-h-11 gap-2"><Plus size={16} /> Nuevo registro</Button>
                   </div>
                 )}
               </div>
@@ -1254,16 +1246,16 @@ export function DispatchWorkspace() {
       <Dialog open={Boolean(detailRecord)} onOpenChange={(open) => !open && setDetailRecord(null)}>
         <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader className="pr-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">Detalle del despacho</p>
-            <DialogTitle>{String(detailRecord?.valores["numero-despacho"] ?? "Registro")}</DialogTitle>
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">Detalle del registro</p>
+            <DialogTitle>{String(detailRecord?.valores.plantel ?? "Registro")}</DialogTitle>
             <DialogDescription>
-              {detailRecord ? `${formatDate(String(detailRecord.valores.fecha ?? ""))} · ${String(detailRecord.valores.hora ?? "")}` : ""}
+              {detailRecord ? `${formatDate(String(detailRecord.valores.fecha ?? ""))} · Estiba ${String(detailRecord.valores["estiba-inicio"] ?? "—")} – ${String(detailRecord.valores["estiba-termino"] ?? "—")}` : ""}
             </DialogDescription>
           </DialogHeader>
           {detailRecord ? <RecordDetails record={detailRecord} schema={sortedSchema} /> : null}
           <DialogFooter>
             <Button variant="outline" onClick={() => setDetailRecord(null)} className="min-h-11">Cerrar</Button>
-            {detailRecord ? <Button onClick={() => { startEditingRecord(detailRecord); setDetailRecord(null); }} className="min-h-11 gap-2"><Pencil size={15} /> Editar despacho</Button> : null}
+            {detailRecord ? <Button onClick={() => { startEditingRecord(detailRecord); setDetailRecord(null); }} className="min-h-11 gap-2"><Pencil size={15} /> Editar registro</Button> : null}
           </DialogFooter>
         </DialogContent>
       </Dialog>
