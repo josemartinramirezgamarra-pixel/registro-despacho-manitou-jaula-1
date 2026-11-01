@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f8f6">
+  <title>Registro Despacho Manitou jaula</title>
+  <style>
+    :root{color-scheme:light;--bg:#f4f8f6;--surface:#fff;--text:#173b38;--muted:#5d716e;--line:#c8ded8;--primary:#0f766e;--primary-dark:#0b5f59;--accent:#d2e8e2;--danger:#c23a38;--warning:#a46d12;--radius:16px;--shadow:0 2px 12px rgba(23,59,56,.06);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-size:15px}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(15,118,110,.24);outline-offset:2px}button:disabled{opacity:.55;cursor:not-allowed}.shell{min-height:100dvh;display:grid;grid-template-columns:248px minmax(0,1fr)}.rail{position:sticky;top:0;height:100dvh;padding:24px 16px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column}.brand{padding:4px 8px 22px}.brand-mark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--primary);color:white;font-weight:800;letter-spacing:-.04em}.brand h1{font-size:17px;line-height:1.2;margin:14px 0 5px}.brand p{margin:0;color:var(--muted);font-size:13px}.nav-list{display:grid;gap:6px}.nav-button{min-height:46px;border:0;border-radius:11px;padding:0 12px;text-align:left;color:var(--muted);background:transparent;font-weight:650}.nav-button:hover{background:var(--bg);color:var(--text)}.nav-button[aria-current="page"]{background:var(--accent);color:var(--primary-dark)}.rail-footer{margin-top:auto;border-top:1px solid var(--line);padding:16px 8px 4px;color:var(--muted);font-size:12px;line-height:1.5}.status{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700}.status::before{content:"";width:8px;height:8px;border-radius:50%;background:#0f766e}.status.offline::before{background:var(--warning)}.main{min-width:0;padding:30px clamp(18px,4vw,56px) 48px}.main-inner{width:min(100%,1040px);margin:0 auto}.topline{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px}.eyebrow{margin:0 0 5px;color:var(--primary);font-size:11px;letter-spacing:.11em;text-transform:uppercase;font-weight:800}.page-title{font-size:clamp(25px,3vw,34px);line-height:1.1;letter-spacing:-.04em;margin:0}.page-description{color:var(--muted);margin:8px 0 0;line-height:1.5}.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.form-panel{padding:clamp(17px,3vw,28px)}.section-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:0 0 20px}.section-heading h2{font-size:18px;margin:0}.section-heading p{font-size:13px;color:var(--muted);margin:5px 0 0}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px}.field{min-width:0}.field.full{grid-column:1/-1}.field label,.field-label{display:block;font-weight:700;font-size:13px;margin:0 0 7px}.required{color:var(--danger);margin-left:3px}.control{display:block;width:100%;min-height:48px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--text);padding:11px 12px}.control:hover{border-color:#9bbdb5}.control.invalid{border-color:var(--danger)}textarea.control{min-height:110px;resize:vertical}.helper{color:var(--muted);font-size:12px;margin:6px 2px 0;line-height:1.45}.field-error{font-size:12px;color:var(--danger);font-weight:650;margin:6px 2px 0}.time-control{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.button{min-height:44px;border:1px solid transparent;border-radius:10px;padding:9px 14px;font-weight:700;transition:background .15s,border-color .15s,color .15s}.button-primary{background:var(--primary);color:#fff}.button-primary:hover{background:var(--primary-dark)}.button-secondary{background:#fff;border-color:var(--line);color:var(--text)}.button-secondary:hover{background:var(--bg)}.button-danger{background:#fff;border-color:#e5b9b7;color:var(--danger)}.button-small{min-height:36px;padding:6px 10px;font-size:13px}.button-row{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap}.sticky-actions{position:sticky;bottom:12px;margin:22px -8px -8px;padding:8px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;display:flex;justify-content:flex-end;gap:8px;z-index:2}.form-note{margin:14px 0 0;color:var(--muted);font-size:12px}.hidden{display:none!important}.toolbar .control{min-height:42px;width:auto;min-width:190px}.toolbar input.control{min-width:min(260px,100%)}.record-list{display:grid;gap:10px;margin-top:16px}.record-card{padding:16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}.record-main{min-width:0}.record-main h3{font-size:15px;margin:0 0 5px;overflow-wrap:anywhere}.record-meta{display:flex;flex-wrap:wrap;gap:7px 14px;color:var(--muted);font-size:12px}.record-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.empty{padding:34px 20px;text-align:center;color:var(--muted)}.empty strong{display:block;color:var(--text);font-size:15px;margin-bottom:5px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}.stat{padding:17px}.stat-label{font-size:12px;color:var(--muted);font-weight:650}.stat-value{font-size:25px;font-weight:800;letter-spacing:-.04em;margin-top:7px;font-variant-numeric:tabular-nums}.table-wrap{overflow:auto}.data-table{width:100%;border-collapse:collapse;min-width:540px;text-align:left;font-size:13px}.data-table th,.data-table td{padding:13px 16px;border-bottom:1px solid var(--line)}.data-table th{background:#f7faf8;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}.data-table td.num,.data-table th.num{text-align:right;font-variant-numeric:tabular-nums}.data-table tbody tr:last-child td{border-bottom:0}.field-list{display:grid;gap:9px}.field-row{padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px}.field-row strong{display:block}.field-row small{color:var(--muted)}.field-actions{display:flex;gap:6px}.pill{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:3px 8px;color:var(--muted);font-size:11px;font-weight:700}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:20;max-width:min(90vw,480px);padding:12px 16px;border-radius:12px;background:var(--text);color:white;box-shadow:0 12px 34px rgba(0,0,0,.18);transition:opacity .18s,transform .18s}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.error{background:#812b29}.dialog{border:0;border-radius:18px;padding:0;width:min(94vw,560px);max-height:min(88dvh,800px);color:var(--text);box-shadow:0 24px 80px rgba(14,42,38,.26)}.dialog::backdrop{background:rgba(16,39,36,.45);backdrop-filter:blur(2px)}.dialog-inner{padding:22px;max-height:inherit;overflow:auto}.dialog-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:1px solid var(--line);padding-bottom:15px;margin-bottom:16px}.dialog-header h2{margin:0;font-size:20px}.icon-close{border:1px solid var(--line);border-radius:9px;background:white;color:var(--muted);width:38px;height:38px;font-size:21px;line-height:1}.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.detail-item{padding:12px;border:1px solid var(--line);border-radius:11px;min-width:0}.detail-item dt{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:5px}.detail-item dd{margin:0;font-weight:650;overflow-wrap:anywhere;white-space:pre-wrap}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}.field-editor{display:grid;gap:14px}.editor-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.checkline{display:flex;align-items:center;gap:9px;font-weight:650}.checkline input{width:18px;height:18px;accent-color:var(--primary)}.mobile-brand{display:none}.mobile-nav{display:none}
+    @media(max-width:800px){.shell{display:block}.rail{display:none}.mobile-brand{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;padding:12px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:4}.mobile-brand strong{font-size:14px}.main{padding:22px 14px 100px}.topline{align-items:flex-start}.toolbar{justify-content:flex-start}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mobile-nav{display:grid;position:fixed;inset:auto 0 0;z-index:5;grid-template-columns:repeat(4,1fr);gap:4px;padding:7px 8px calc(7px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border-top:1px solid var(--line);backdrop-filter:blur(12px)}.mobile-nav .nav-button{text-align:center;font-size:11px;min-height:46px;padding:4px}.mobile-nav .nav-button[aria-current="page"]{background:var(--accent)}.record-card{grid-template-columns:1fr}.record-actions{justify-content:flex-start}.sticky-actions{bottom:66px}.toolbar .control{min-width:0;flex:1}.topline .status{white-space:nowrap}}
+    @media(max-width:520px){.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.topline{display:block}.topline>.status{margin-top:12px}.toolbar{display:grid;grid-template-columns:1fr 1fr}.toolbar .control,.toolbar input.control{width:100%;min-width:0}.toolbar .search-control{grid-column:1/-1}.button-row .button{flex:1}.stats{gap:8px}.stat{padding:14px}.stat-value{font-size:22px}.detail-grid,.editor-two{grid-template-columns:1fr}.dialog-inner{padding:17px}.field-row{grid-template-columns:1fr}.field-actions{justify-content:flex-start}.time-control{grid-template-columns:minmax(0,1fr) auto}.time-control .button{padding:8px 10px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail" aria-label="Navegación principal">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">DM</div><h1>Registro Despacho<br>Manitou jaula</h1><p>Control de despachos de jaula</p></div>
+      <nav class="nav-list" id="desktopNav"></nav>
+      <div class="rail-footer"><span class="status" id="desktopStatus">Con conexión</span><p>Los registros se guardan en este dispositivo.</p></div>
+    </aside>
+    <header class="mobile-brand"><strong>Registro Despacho Manitou jaula</strong><span class="status" id="mobileStatus">Con conexión</span></header>
+    <main class="main"><div class="main-inner" id="app" aria-live="polite"></div></main>
+  </div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Navegación principal"></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog class="dialog" id="dialog"><div class="dialog-inner" id="dialogBody"></div></dialog>
+  <input class="hidden" id="backupFile" type="file" accept="application/json,.json">
+  <script>
+    (() => {
+      "use strict";
+      const SCHEMA_KEY = "despachos_manitou_schema_v1";
+      const RECORDS_KEY = "despachos_manitou_v1";
+      const navItems = [
+        { id: "nuevo", label: "Nuevo registro" },
+        { id: "registros", label: "Registros" },
+        { id: "resumen", label: "Resumen" },
+        { id: "campos", label: "Campos" },
+      ];
+      const defaultFields = [
+        { id: "fecha", etiqueta: "Fecha", tipo: "fecha", obligatorio: true, ayuda: "", ancho: "medio", opciones: [] },
+        { id: "plantel", etiqueta: "Plantel", tipo: "texto", obligatorio: true, ayuda: "", ancho: "medio", opciones: [] },
+        { id: "galpon", etiqueta: "Galpón", tipo: "texto", obligatorio: false, ayuda: "", ancho: "medio", opciones: [] },
+        { id: "placa", etiqueta: "Placa", tipo: "texto", obligatorio: false, ayuda: "", ancho: "medio", opciones: [] },
+        { id: "grupo", etiqueta: "Grupo", tipo: "numero", obligatorio: false, ayuda: "", ancho: "medio", opciones: [] },
+        { id: "coordinador", etiqueta: "Coordinador", tipo: "texto", obligatorio: false, ayuda: "", ancho: "medio", opciones: [] },
+        { id: "varones", etiqueta: "Varones", tipo: "numero", obligatorio: false, ayuda: "", ancho: "medio", opciones: [] },
+        { id: "mujeres", etiqueta: "Mujeres", tipo: "numero", obligatorio: false, ayuda: "", ancho: "medio", opciones: [] },
+        { id: "jabas", etiqueta: "Jabas", tipo: "numero", obligatorio: false, ayuda: "", ancho: "medio", opciones: [] },
+        { id: "densidad", etiqueta: "Densidad", tipo: "numero", obligatorio: false, ayuda: "", ancho: "medio", opciones: [] },
+        { id: "estiba-inicio", etiqueta: "Estiba inicio", tipo: "hora", obligatorio: false, ayuda: "", ancho: "medio", opciones: [] },
+        { id: "estiba-termino", etiqueta: "Estiba término", tipo: "hora", obligatorio: false, ayuda: "", ancho: "medio", opciones: [] },
+      ];
+      const typeLabels = { texto: "Texto", numero: "Número entero", decimal: "Número decimal", fecha: "Fecha", hora: "Hora", select: "Lista", textarea: "Texto largo", checkbox: "Casilla" };
+      const state = { tab: "nuevo", schema: { secciones: [{ id: "datos-del-despacho", titulo: "Datos del despacho", orden: 0 }], campos: clone(defaultFields) }, records: [], values: {}, errors: {}, editingId: null, query: "", filter: "all", storageAvailable: true };
+      const app = document.getElementById("app");
+      const dialog = document.getElementById("dialog");
+      const dialogBody = document.getElementById("dialogBody");
+      let toastTimer;
+
+      function clone(value) { return JSON.parse(JSON.stringify(value)); }
+      function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]); }
+      function localDate(date = new Date()) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`; }
+      function localTime(date = new Date()) { return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`; }
+      function fmtNumber(value) { return new Intl.NumberFormat("es-PE").format(Number(value) || 0); }
+      function fmtDate(value) { if (!value) return "—"; const [year, month, day] = String(value).slice(0, 10).split("-"); return year && month && day ? `${day}/${month}/${year}` : value; }
+      function notify(message, type = "success") { const toast = document.getElementById("toast"); toast.textContent = message; toast.className = `toast show${type === "error" ? " error" : ""}`; clearTimeout(toastTimer); toastTimer = setTimeout(() => { toast.className = "toast"; }, 3200); }
+      function loadLocal() {
+        try {
+          const savedSchema = JSON.parse(localStorage.getItem(SCHEMA_KEY) || "null");
+          if (savedSchema && Array.isArray(savedSchema.campos) && savedSchema.campos.length) state.schema = savedSchema;
+          const savedRecords = JSON.parse(localStorage.getItem(RECORDS_KEY) || "[]");
+          if (Array.isArray(savedRecords)) state.records = savedRecords.filter((record) => record && typeof record === "object" && record.valores);
+        } catch {
+          state.storageAvailable = false;
+        }
+        try { localStorage.setItem("__manitou_storage_test__", "1"); localStorage.removeItem("__manitou_storage_test__"); }
+        catch { state.storageAvailable = false; }
+        const last = [...state.records].sort((a, b) => String(b.creado_en).localeCompare(String(a.creado_en))).find((record) => record.valores?.plantel);
+        state.values = { fecha: localDate(), plantel: last?.valores?.plantel || "" };
+      }
+      function saveLocal() {
+        try {
+          localStorage.setItem(SCHEMA_KEY, JSON.stringify(state.schema));
+          localStorage.setItem(RECORDS_KEY, JSON.stringify(state.records));
+          state.storageAvailable = true;
+        } catch {
+          state.storageAvailable = false;
+          notify("El navegador no pudo guardar los cambios. Descarga un respaldo para conservarlos.", "error");
+        }
+        updateStatus();
+      }
+      function updateStatus() {
+        const online = navigator.onLine;
+        [document.getElementById("desktopStatus"), document.getElementById("mobileStatus")].forEach((node) => {
+          node.textContent = !state.storageAvailable ? "Guardado limitado" : online ? "Con conexión" : "Sin conexión";
+          node.classList.toggle("offline", !online || !state.storageAvailable);
+          node.title = !state.storageAvailable ? "El navegador no permite guardar en este archivo. Usa respaldos." : online ? "Puedes seguir registrando sin conexión." : "La aplicación sigue disponible sin conexión.";
+        });
+        const pageStatus = document.getElementById("pageStatus");
+        if (pageStatus) pageStatus.textContent = !state.storageAvailable ? "Guardado limitado" : online ? "Con conexión" : "Sin conexión";
+      }
+      function navMarkup() { return navItems.map((item) => `<button class="nav-button" type="button" data-tab="${item.id}" aria-current="${state.tab === item.id ? "page" : "false"}">${item.label}</button>`).join(""); }
+      function renderNav() {
+        document.getElementById("desktopNav").innerHTML = navMarkup();
+        document.getElementById("mobileNav").innerHTML = navMarkup();
+      }
+      function currentFieldValue(field) { const value = state.values[field.id]; return typeof value === "boolean" ? value : String(value ?? ""); }
+      function renderInput(field) {
+        const id = `field-${escapeHtml(field.id)}`;
+        const label = `<label for="${id}">${escapeHtml(field.etiqueta)}${field.obligatorio ? '<span class="required" aria-label="obligatorio">*</span>' : ""}</label>`;
+        const value = currentFieldValue(field);
+        const invalid = state.errors?.[field.id];
+        let control;
+        if (field.tipo === "checkbox") {
+          control = `<label class="checkline"><input id="${id}" type="checkbox" data-field="${escapeHtml(field.id)}" ${value === true ? "checked" : ""}><span>${escapeHtml(field.etiqueta)}</span></label>`;
+        } else if (field.tipo === "select") {
+          const choices = (field.opciones || []).map((option) => `<option value="${escapeHtml(option)}" ${value === option ? "selected" : ""}>${escapeHtml(option)}</option>`).join("");
+          control = `${label}<select id="${id}" class="control${invalid ? " invalid" : ""}" data-field="${escapeHtml(field.id)}"><option value="">Selecciona una opción</option>${choices}</select>`;
+        } else if (field.tipo === "textarea") {
+          control = `${label}<textarea id="${id}" class="control${invalid ? " invalid" : ""}" data-field="${escapeHtml(field.id)}" ${field.maxlength ? `maxlength="${Number(field.maxlength)}"` : ""}>${escapeHtml(value)}</textarea>`;
+        } else {
+          const inputType = ({ fecha: "date", hora: "time", numero: "number", decimal: "number" })[field.tipo] || "text";
+          const numeric = field.tipo === "numero" || field.tipo === "decimal";
+          const input = `<input id="${id}" class="control${invalid ? " invalid" : ""}" type="${inputType}" data-field="${escapeHtml(field.id)}" value="${escapeHtml(value)}" ${numeric ? `min="0" step="${field.tipo === "decimal" ? "any" : "1"}" inputmode="${field.tipo === "decimal" ? "decimal" : "numeric"}"` : ""} ${field.maxlength ? `maxlength="${Number(field.maxlength)}"` : ""}>`;
+          control = field.tipo === "hora" ? `${label}<div class="time-control">${input}<button class="button button-secondary" type="button" data-now="${escapeHtml(field.id)}">Ahora</button></div>` : `${label}${input}`;
+        }
+        return `<div class="field ${field.ancho === "completo" ? "full" : ""}">${control}${field.ayuda ? `<p class="helper">${escapeHtml(field.ayuda)}</p>` : ""}${invalid ? `<p class="field-error" role="alert">${escapeHtml(invalid)}</p>` : ""}</div>`;
+      }
+      function pageHeader(title, description, actions = "") { return `<div class="topline"><div><p class="eyebrow">Control de despachos de jaula</p><h1 class="page-title">${title}</h1><p class="page-description">${description}</p></div><span class="status" id="pageStatus">${navigator.onLine ? "Con conexión" : "Sin conexión"}</span></div>${actions}`; }
+      function renderNew() {
+        const editing = Boolean(state.editingId);
+        const fields = [...state.schema.campos].sort((a, b) => (a.orden || 0) - (b.orden || 0));
+        return `${pageHeader(editing ? "Editar registro" : "Nuevo registro", editing ? "Actualiza los datos del despacho seleccionado." : "Completa los datos del despacho de aves.")}
+          <form id="dispatchForm" class="panel form-panel" novalidate>
+            <div class="section-heading"><div><h2>Datos del despacho</h2><p>Los campos con * son obligatorios.</p></div><span class="pill">${fields.length} campos</span></div>
+            <div class="fields">${fields.map(renderInput).join("")}</div>
+            <p class="form-note">Los registros se conservan en este dispositivo. Usa un respaldo JSON para trasladarlos.</p>
+            <div class="sticky-actions">${editing ? '<button class="button button-secondary" type="button" data-action="cancel-edit">Cancelar</button>' : ""}<button class="button button-primary" type="submit">${editing ? "Guardar cambios" : "Guardar registro"}</button></div>
+          </form>`;
+      }
+      function visibleRecords() {
+        const query = state.query.trim().toLocaleLowerCase("es");
+        return [...state.records].filter((record) => state.filter === "all" || String(record.valores?.plantel ?? "") === state.filter).filter((record) => {
+          if (!query) return true;
+          const searchable = ["plantel", "galpon", "placa", "coordinador", "grupo"].map((id) => String(record.valores?.[id] ?? "")).join(" ");
+          return searchable.toLocaleLowerCase("es").includes(query);
+        }).sort((a, b) => String(b.creado_en).localeCompare(String(a.creado_en)));
+      }
+      function renderRecords() {
+        const plantels = [...new Set(state.records.map((record) => String(record.valores?.plantel ?? "")).filter(Boolean))].sort((a, b) => a.localeCompare(b, "es"));
+        const actions = `<div class="toolbar"><input class="control search-control" id="searchRecords" type="search" placeholder="Buscar plantel, placa…" value="${escapeHtml(state.query)}" aria-label="Buscar registros"><select class="control" id="filterPlantel" aria-label="Filtrar por plantel"><option value="all">Todos los planteles</option>${plantels.map((plantel) => `<option value="${escapeHtml(plantel)}" ${state.filter === plantel ? "selected" : ""}>${escapeHtml(plantel)}</option>`).join("")}</select><button class="button button-secondary" type="button" data-action="csv">Exportar CSV</button><button class="button button-secondary" type="button" data-action="backup">Respaldo JSON</button></div>`;
+        const records = visibleRecords();
+        const cards = records.length ? records.map((record) => {
+          const values = record.valores || {};
+          const label = record.etiquetas || {};
+          const summary = [values.fecha ? fmtDate(values.fecha) : "Sin fecha", values.plantel || "Sin plantel", values.placa ? `Placa ${values.placa}` : "", values.galpon ? `Galpón ${values.galpon}` : ""].filter(Boolean).join(" · ");
+          const id = escapeHtml(record.id);
+          return `<article class="panel record-card"><div class="record-main"><h3>${escapeHtml(summary)}</h3><div class="record-meta"><span>Varones: ${escapeHtml(values.varones ?? "—")}</span><span>Mujeres: ${escapeHtml(values.mujeres ?? "—")}</span><span>Jabas: ${escapeHtml(values.jabas ?? "—")}</span><span>Estiba: ${escapeHtml(values["estiba-inicio"] || "—")}–${escapeHtml(values["estiba-termino"] || "—")}</span></div></div><div class="record-actions"><button class="button button-secondary button-small" type="button" data-view="${id}">Ver</button><button class="button button-secondary button-small" type="button" data-edit="${id}">Editar</button><button class="button button-danger button-small" type="button" data-delete="${id}">Eliminar</button></div></article>`;
+        }).join("") : `<div class="panel empty"><strong>${state.records.length ? "No hay resultados" : "Aún no hay registros"}</strong><span>${state.records.length ? "Prueba con otra búsqueda o filtro." : "Guarda un despacho para verlo en este historial."}</span></div>`;
+        return `${pageHeader("Registros", "Busca, revisa y exporta tus despachos.", actions)}<div class="record-list">${cards}</div><p class="form-note">Mostrando ${records.length} de ${state.records.length} registros.</p>`;
+      }
+      function renderSummary() {
+        const totalVarones = state.records.reduce((sum, record) => sum + (Number(record.valores?.varones) || 0), 0);
+        const totalMujeres = state.records.reduce((sum, record) => sum + (Number(record.valores?.mujeres) || 0), 0);
+        const today = state.records.filter((record) => record.valores?.fecha === localDate()).length;
+        const grouped = new Map();
+        state.records.forEach((record) => {
+          const plantel = String(record.valores?.plantel || "Sin plantel");
+          const current = grouped.get(plantel) || { records: 0, varones: 0, mujeres: 0 };
+          current.records += 1; current.varones += Number(record.valores?.varones) || 0; current.mujeres += Number(record.valores?.mujeres) || 0;
+          grouped.set(plantel, current);
+        });
+        const rows = [...grouped.entries()].map(([plantel, values]) => ({ plantel, ...values, aves: values.varones + values.mujeres })).sort((a, b) => b.aves - a.aves);
+        return `${pageHeader("Resumen", "Totales de operación calculados desde los registros guardados.")}
+          <div class="stats"><article class="panel stat"><div class="stat-label">Registros guardados</div><div class="stat-value">${fmtNumber(state.records.length)}</div></article><article class="panel stat"><div class="stat-label">Total de varones</div><div class="stat-value">${fmtNumber(totalVarones)}</div></article><article class="panel stat"><div class="stat-label">Total de mujeres</div><div class="stat-value">${fmtNumber(totalMujeres)}</div></article><article class="panel stat"><div class="stat-label">Registros de hoy</div><div class="stat-value">${fmtNumber(today)}</div></article></div>
+          <section class="panel"><div class="section-heading" style="padding:18px 18px 0;margin-bottom:10px"><div><h2>Registros por plantel</h2><p>Ordenados por total de aves.</p></div></div>${rows.length ? `<div class="table-wrap"><table class="data-table"><thead><tr><th>Plantel</th><th class="num">Registros</th><th class="num">Varones</th><th class="num">Mujeres</th><th class="num">Total aves</th></tr></thead><tbody>${rows.map((row) => `<tr><td><strong>${escapeHtml(row.plantel)}</strong></td><td class="num">${fmtNumber(row.records)}</td><td class="num">${fmtNumber(row.varones)}</td><td class="num">${fmtNumber(row.mujeres)}</td><td class="num"><strong>${fmtNumber(row.aves)}</strong></td></tr>`).join("")}</tbody></table></div>` : '<div class="empty"><strong>El resumen aparecerá aquí</strong><span>Guarda tu primer despacho para ver los totales.</span></div>'}</section>
+          <section class="panel" style="margin-top:16px;padding:17px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap"><div><strong>Tus datos se conservan en este dispositivo</strong><p class="helper">Descarga un respaldo JSON para guardar una copia o trasladarla.</p></div><div class="button-row"><button class="button button-secondary" type="button" data-action="backup">Descargar respaldo</button><button class="button button-secondary" type="button" data-action="import">Importar respaldo</button></div></section>`;
+      }
+      function renderFields() {
+        const fields = [...state.schema.campos].sort((a, b) => (a.orden || 0) - (b.orden || 0));
+        return `${pageHeader("Campos", "Personaliza las preguntas del formulario de despacho.", '<div class="toolbar"><button class="button button-primary" type="button" data-action="add-field">Agregar campo</button><button class="button button-secondary" type="button" data-action="restore-fields">Restaurar campos iniciales</button></div>')}
+          <div class="field-list">${fields.map((field, index) => `<article class="panel field-row"><div><strong>${escapeHtml(field.etiqueta)} ${field.obligatorio ? '<span class="required">*</span>' : ""}</strong><small>${escapeHtml(typeLabels[field.tipo] || field.tipo)} · ${field.ancho === "completo" ? "Ancho completo" : "Medio ancho"}${field.ayuda ? ` · ${escapeHtml(field.ayuda)}` : ""}</small></div><div class="field-actions"><button class="button button-secondary button-small" type="button" data-move="${escapeHtml(field.id)}" data-delta="-1" aria-label="Subir campo" ${index === 0 ? "disabled" : ""}>Subir</button><button class="button button-secondary button-small" type="button" data-move="${escapeHtml(field.id)}" data-delta="1" aria-label="Bajar campo" ${index === fields.length - 1 ? "disabled" : ""}>Bajar</button><button class="button button-secondary button-small" type="button" data-field-edit="${escapeHtml(field.id)}">Editar</button><button class="button button-danger button-small" type="button" data-field-delete="${escapeHtml(field.id)}">Quitar</button></div></article>`).join("")}</div>
+          <section class="panel" style="margin-top:16px;padding:17px"><strong>Respaldos</strong><p class="helper">Los respaldos JSON incluyen el formulario y todos tus registros.</p><div class="button-row" style="justify-content:flex-start;margin-top:12px"><button class="button button-secondary" type="button" data-action="schema-export">Exportar esquema</button><button class="button button-secondary" type="button" data-action="backup">Descargar respaldo</button><button class="button button-secondary" type="button" data-action="import">Importar respaldo</button></div></section>`;
+      }
+      function render() {
+        renderNav();
+        app.innerHTML = state.tab === "nuevo" ? renderNew() : state.tab === "registros" ? renderRecords() : state.tab === "resumen" ? renderSummary() : renderFields();
+        updateStatus();
+      }
+      function validate() {
+        const errors = {};
+        state.schema.campos.forEach((field) => {
+          const value = state.values[field.id];
+          const text = typeof value === "boolean" ? "" : String(value ?? "").trim();
+          if (field.obligatorio && (field.tipo === "checkbox" ? value !== true : !text)) errors[field.id] = field.tipo === "checkbox" ? "Debes marcar esta casilla." : "Este dato es obligatorio.";
+          else if (text && field.tipo === "numero" && (!/^\d+$/.test(text) || Number(text) < 0)) errors[field.id] = "Ingresa un número entero igual o mayor que cero.";
+          else if (text && field.tipo === "decimal" && (!/^\d+(\.\d+)?$/.test(text) || Number(text) < 0)) errors[field.id] = "Ingresa un número igual o mayor que cero.";
+          else if (text && field.tipo === "select" && !(field.opciones || []).includes(text)) errors[field.id] = "Selecciona una opción disponible.";
+          else if (text && field.maxlength && text.length > field.maxlength) errors[field.id] = `Usa un máximo de ${field.maxlength} caracteres.`;
+        });
+        state.errors = errors;
+        return Object.keys(errors).length === 0;
+      }
+      function saveRecord(event) {
+        event.preventDefault();
+        if (!validate()) { render(); app.querySelector(".invalid")?.focus(); notify("Revisa los campos marcados.", "error"); return; }
+        const labels = Object.fromEntries(state.schema.campos.map((field) => [field.id, field.etiqueta]));
+        const values = { ...state.values };
+        if (state.editingId) {
+          state.records = state.records.map((record) => record.id === state.editingId ? { ...record, valores: { ...record.valores, ...values }, etiquetas: { ...record.etiquetas, ...labels }, estado_sync: "pendiente" } : record);
+          state.editingId = null;
+          state.tab = "registros";
+          saveLocal(); render(); notify("Registro actualizado.");
+          return;
+        }
+        const id = globalThis.crypto?.randomUUID ? crypto.randomUUID() : `despacho-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        state.records.push({ id, creado_en: new Date().toISOString(), estado_sync: "pendiente", valores: values, etiquetas: labels });
+        const savedPlantel = values.plantel || "";
+        const savedDate = values.fecha || localDate();
+        state.values = { fecha: savedDate, plantel: savedPlantel };
+        saveLocal(); render(); notify("Registro guardado en este dispositivo.");
+      }
+      function safeFilename(name) { return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "despacho"; }
+      function download(content, type, filename) {
+        const blob = new Blob([content], { type });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a"); anchor.href = url; anchor.download = filename; anchor.style.display = "none";
+        document.body.append(anchor); anchor.click(); anchor.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+      function exportBackup() { download(JSON.stringify({ esquema: state.schema, registros: state.records }, null, 2), "application/json;charset=utf-8", "respaldo-despacho-manitou.json"); notify("Respaldo descargado."); }
+      function exportSchema() { download(JSON.stringify(state.schema, null, 2), "application/json;charset=utf-8", "esquema-despacho-manitou.json"); notify("Esquema descargado."); }
+      function exportCsv() {
+        const fields = [...state.schema.campos].sort((a, b) => (a.orden || 0) - (b.orden || 0));
+        const quote = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+        const rows = [[...fields.map((field) => field.etiqueta), "Registrado el"], ...visibleRecords().map((record) => [...fields.map((field) => record.valores?.[field.id] === true ? "Sí" : record.valores?.[field.id] === false ? "No" : record.valores?.[field.id] ?? ""), new Date(record.creado_en).toLocaleString("es-PE")])];
+        download(`\ufeff${rows.map((row) => row.map(quote).join(",")).join("\r\n")}`, "text/csv;charset=utf-8", "despachos-manitou.csv");
+        notify(`${visibleRecords().length} registros exportados a CSV.`);
+      }
+      function openDialog(content) { dialogBody.innerHTML = content; if (!dialog.open) dialog.showModal(); }
+      function closeDialog() { if (dialog.open) dialog.close(); }
+      function openConfirm(title, message, confirmLabel, onConfirm, danger = false) {
+        openDialog(`<div class="dialog-header"><h2>${escapeHtml(title)}</h2><button class="icon-close" type="button" data-dialog-close aria-label="Cerrar">×</button></div><p>${escapeHtml(message)}</p><div class="dialog-actions"><button class="button button-secondary" type="button" data-dialog-close>Cancelar</button><button class="button ${danger ? "button-danger" : "button-primary"}" id="confirmAction" type="button">${escapeHtml(confirmLabel)}</button></div>`);
+        dialogBody.querySelector("#confirmAction").addEventListener("click", () => { closeDialog(); onConfirm(); });
+      }
+      function openRecord(recordId) {
+        const record = state.records.find((item) => item.id === recordId); if (!record) return;
+        const labelMap = record.etiquetas || {};
+        const entries = Object.entries(record.valores || {}).filter(([, value]) => value !== "" && value !== null && value !== undefined).map(([id, value]) => `<div class="detail-item"><dt>${escapeHtml(labelMap[id] || state.schema.campos.find((field) => field.id === id)?.etiqueta || id)}</dt><dd>${escapeHtml(typeof value === "boolean" ? value ? "Sí" : "No" : value)}</dd></div>`).join("");
+        openDialog(`<div class="dialog-header"><div><p class="eyebrow">Detalle del despacho</p><h2>${escapeHtml(record.valores?.plantel || "Registro")}</h2></div><button class="icon-close" type="button" data-dialog-close aria-label="Cerrar">×</button></div><dl class="detail-grid">${entries || "<p>Este registro no tiene datos.</p>"}</dl><div class="dialog-actions"><button class="button button-secondary" type="button" data-dialog-close>Cerrar</button><button class="button button-primary" type="button" data-dialog-edit="${escapeHtml(record.id)}">Editar</button></div>`);
+      }
+      function editRecord(recordId) {
+        const record = state.records.find((item) => item.id === recordId); if (!record) return;
+        closeDialog(); state.editingId = record.id; state.values = { ...record.valores }; state.errors = {}; state.tab = "nuevo"; render(); window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function deleteRecord(recordId) {
+        openConfirm("Eliminar registro", "Este despacho se quitará de este dispositivo. Esta acción no se puede deshacer.", "Eliminar", () => { state.records = state.records.filter((record) => record.id !== recordId); saveLocal(); render(); notify("Registro eliminado."); }, true);
+      }
+      function fieldForm(field) {
+        const editing = Boolean(field);
+        const item = field || { etiqueta: "", tipo: "texto", obligatorio: false, ayuda: "", ancho: "medio", opciones: [], maxlength: "" };
+        openDialog(`<div class="dialog-header"><div><p class="eyebrow">Formulario de despacho</p><h2>${editing ? "Editar campo" : "Agregar campo"}</h2></div><button class="icon-close" type="button" data-dialog-close aria-label="Cerrar">×</button></div><form id="fieldEditor" class="field-editor"><div><label class="field-label" for="fieldLabel">Nombre del campo</label><input class="control" id="fieldLabel" name="label" required maxlength="80" value="${escapeHtml(item.etiqueta)}"></div><div class="editor-two"><div><label class="field-label" for="fieldType">Tipo de dato</label><select class="control" id="fieldType" name="type">${Object.entries(typeLabels).map(([value, label]) => `<option value="${value}" ${item.tipo === value ? "selected" : ""}>${label}</option>`).join("")}</select></div><div><label class="field-label" for="fieldWidth">Ancho</label><select class="control" id="fieldWidth" name="width"><option value="medio" ${item.ancho !== "completo" ? "selected" : ""}>Medio</option><option value="completo" ${item.ancho === "completo" ? "selected" : ""}>Completo</option></select></div></div><div id="optionsWrap" class="${item.tipo === "select" ? "" : "hidden"}"><label class="field-label" for="fieldOptions">Opciones (separadas por coma)</label><input class="control" id="fieldOptions" name="options" value="${escapeHtml((item.opciones || []).join(", "))}"></div><div><label class="field-label" for="fieldHelp">Texto de ayuda (opcional)</label><input class="control" id="fieldHelp" name="help" maxlength="180" value="${escapeHtml(item.ayuda || "")}"></div><div><label class="field-label" for="fieldMax">Máximo de caracteres (opcional)</label><input class="control" id="fieldMax" name="maxlength" type="number" min="1" step="1" value="${escapeHtml(item.maxlength || "")}"></div><label class="checkline"><input name="required" type="checkbox" ${item.obligatorio ? "checked" : ""}> Campo obligatorio</label><div class="dialog-actions"><button class="button button-secondary" type="button" data-dialog-close>Cancelar</button><button class="button button-primary" type="submit">Guardar campo</button></div></form>`);
+        const typeSelect = dialogBody.querySelector("#fieldType");
+        typeSelect.addEventListener("change", () => dialogBody.querySelector("#optionsWrap").classList.toggle("hidden", typeSelect.value !== "select"));
+        dialogBody.querySelector("#fieldEditor").addEventListener("submit", (event) => {
+          event.preventDefault();
+          const form = new FormData(event.currentTarget);
+          const label = String(form.get("label") || "").trim();
+          const type = String(form.get("type") || "texto");
+          const options = String(form.get("options") || "").split(",").map((value) => value.trim()).filter(Boolean);
+          if (!label) return;
+          if (type === "select" && options.length === 0) { notify("Agrega al menos una opción.", "error"); return; }
+          if (editing) {
+            state.schema.campos = state.schema.campos.map((entry) => entry.id === item.id ? { ...entry, etiqueta: label, tipo: type, opciones: options, obligatorio: form.has("required"), ayuda: String(form.get("help") || "").trim(), ancho: String(form.get("width") || "medio"), maxlength: Number(form.get("maxlength")) || undefined } : entry);
+          } else {
+            const id = `campo-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+            state.schema.campos.push({ id, etiqueta: label, seccion_id: "datos-del-despacho", tipo: type, opciones: options, obligatorio: form.has("required"), ayuda: String(form.get("help") || "").trim(), ancho: String(form.get("width") || "medio"), orden: state.schema.campos.length, maxlength: Number(form.get("maxlength")) || undefined });
+          }
+          closeDialog(); saveLocal(); render(); notify(editing ? "Campo actualizado." : "Campo agregado.");
+        });
+        dialogBody.querySelector("#fieldLabel").focus();
+      }
+      function importBackup(file) {
+        if (!file) return;
+        file.text().then((text) => {
+          const parsed = JSON.parse(text);
+          const schemaOnly = parsed && Array.isArray(parsed.campos) && !Array.isArray(parsed.registros);
+          const incomingRecords = Array.isArray(parsed) ? parsed : parsed?.registros;
+          const incomingSchema = Array.isArray(parsed) ? state.schema : schemaOnly ? parsed : parsed?.esquema;
+          if (!incomingSchema || !Array.isArray(incomingSchema.campos) || (!schemaOnly && (!Array.isArray(incomingRecords) || !incomingRecords.every((record) => record && record.valores && typeof record.valores === "object")))) throw new Error("El archivo no contiene un respaldo o esquema válido.");
+          if (schemaOnly) {
+            openConfirm("Importar esquema", "Se reemplazará la configuración de campos. Tus registros guardados se conservarán.", "Importar", () => { state.schema = incomingSchema; saveLocal(); render(); notify("Esquema importado."); });
+            return;
+          }
+          openConfirm("Importar respaldo", `Se reemplazarán los ${state.records.length} registros actuales por los ${incomingRecords.length} del archivo.`, "Importar", () => {
+            state.records = incomingRecords; state.schema = incomingSchema; saveLocal(); render(); notify("Respaldo importado.");
+          });
+        }).catch((error) => notify(error instanceof Error ? error.message : "No se pudo leer el respaldo.", "error"));
+      }
+      function reorderField(id, delta) {
+        const fields = [...state.schema.campos].sort((a, b) => (a.orden || 0) - (b.orden || 0));
+        const index = fields.findIndex((field) => field.id === id); const target = index + delta;
+        if (index < 0 || target < 0 || target >= fields.length) return;
+        [fields[index], fields[target]] = [fields[target], fields[index]];
+        fields.forEach((field, position) => { field.orden = position; }); state.schema.campos = fields;
+        saveLocal(); render();
+      }
+      function handleClick(event) {
+        const target = event.target.closest("button"); if (!target) return;
+        if (target.dataset.tab) { state.tab = target.dataset.tab; state.editingId = null; state.errors = {}; if (state.tab === "nuevo") state.values = { fecha: localDate(), plantel: "" }; render(); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+        if (target.dataset.now) { state.values[target.dataset.now] = localTime(); render(); app.querySelector(`[data-field="${CSS.escape(target.dataset.now)}"]`)?.focus(); return; }
+        if (target.dataset.view) { openRecord(target.dataset.view); return; }
+        if (target.dataset.edit || target.dataset.dialogEdit) { editRecord(target.dataset.edit || target.dataset.dialogEdit); return; }
+        if (target.dataset.delete) { deleteRecord(target.dataset.delete); return; }
+        if (target.dataset.fieldEdit) { fieldForm(state.schema.campos.find((field) => field.id === target.dataset.fieldEdit)); return; }
+        if (target.dataset.fieldDelete) {
+          const field = state.schema.campos.find((entry) => entry.id === target.dataset.fieldDelete); if (!field) return;
+          openConfirm("Quitar campo", `Se quitará “${field.etiqueta}” del formulario. Los datos ya guardados en registros anteriores se conservarán.`, "Quitar campo", () => { state.schema.campos = state.schema.campos.filter((entry) => entry.id !== field.id); state.schema.campos.forEach((entry, index) => { entry.orden = index; }); delete state.values[field.id]; saveLocal(); render(); notify("Campo quitado."); }, true); return;
+        }
+        if (target.dataset.move) { reorderField(target.dataset.move, Number(target.dataset.delta)); return; }
+        if (target.dataset.action === "cancel-edit") { state.editingId = null; state.values = { fecha: localDate(), plantel: "" }; render(); return; }
+        if (target.dataset.action === "csv") { exportCsv(); return; }
+        if (target.dataset.action === "backup") { exportBackup(); return; }
+        if (target.dataset.action === "schema-export") { exportSchema(); return; }
+        if (target.dataset.action === "import") { document.getElementById("backupFile").click(); return; }
+        if (target.dataset.action === "add-field") { fieldForm(); return; }
+        if (target.dataset.action === "restore-fields") {
+          openConfirm("Restaurar campos iniciales", "Se reemplazará la lista de campos actual por los 12 campos iniciales. Tus registros guardados no se eliminarán.", "Restaurar", () => { state.schema = { secciones: [{ id: "datos-del-despacho", titulo: "Datos del despacho", orden: 0 }], campos: clone(defaultFields).map((field, orden) => ({ ...field, seccion_id: "datos-del-despacho", orden })) }; saveLocal(); render(); notify("Campos iniciales restaurados."); }); return;
+        }
+        if (target.hasAttribute("data-dialog-close")) closeDialog();
+      }
+      document.addEventListener("click", handleClick);
+      document.addEventListener("submit", (event) => { if (event.target.id === "dispatchForm") saveRecord(event); });
+      document.addEventListener("input", (event) => {
+        const field = event.target.dataset?.field;
+        if (field) { state.values[field] = event.target.type === "checkbox" ? event.target.checked : event.target.value; if (state.errors?.[field]) { delete state.errors[field]; event.target.classList.remove("invalid"); event.target.closest(".field")?.querySelector(".field-error")?.remove(); } }
+        if (event.target.id === "searchRecords") { state.query = event.target.value; const cursor = event.target.selectionStart; render(); const next = document.getElementById("searchRecords"); next?.focus(); next?.setSelectionRange(cursor, cursor); }
+      });
+      document.addEventListener("change", (event) => {
+        if (event.target.id === "filterPlantel") { state.filter = event.target.value; render(); }
+        if (event.target.id === "backupFile") { importBackup(event.target.files?.[0]); event.target.value = ""; }
+      });
+      dialog.addEventListener("click", (event) => { if (event.target === dialog) closeDialog(); });
+      window.addEventListener("online", updateStatus);
+      window.addEventListener("offline", updateStatus);
+      loadLocal(); render();
+      if (!state.storageAvailable) notify("El navegador no permitió guardar datos automáticamente. Usa la opción Respaldo JSON.", "error");
+    })();
+  </script>
+</body>
+</html>
