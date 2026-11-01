@@ -851,7 +851,7 @@ export function DispatchWorkspace() {
                       </section>
                     );
                   })}
-                  <div className="sticky bottom-[76px] z-10 -mx-1 rounded-[14px] border border-border/80 bg-background/95 p-2 shadow-[0_8px_24px_hsl(174_31%_13%/0.09)] backdrop-blur sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
+                  <div className="sticky bottom-[76px] z-10 -mx-1 rounded-[14px] border border-border/80 bg-background/95 p-2 shadow-[0_8px_24px_hsl(174_31%_13%/0.09)] backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
                     <Button type="submit" className="min-h-14 w-full gap-2 rounded-[14px] text-base font-bold shadow-sm sm:w-auto sm:min-w-[240px]">
                       <CheckCircle2 size={19} />
                       {editingRecordId ? "Guardar cambios" : "Guardar registro"}
