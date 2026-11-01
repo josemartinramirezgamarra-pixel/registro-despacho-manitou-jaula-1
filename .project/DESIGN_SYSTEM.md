@@ -5,26 +5,26 @@ The **committed** visual direction. Build / Landing / Design MUST follow this so
 product stays consistent. Change it deliberately, and commit the change.
 
 ## Direction
-{{one-line aesthetic — e.g. "clean editorial, trust-blue, generous whitespace"}}
+Manifiesto de báscula de campo: una superficie clara y ordenada, verde-teal de confianza, grupos de datos bien separados y controles amplios para registrar desde el celular.
 
 ## Palette
 | Token | Value |
 |-------|-------|
-| background | {{#fff}} |
-| surface | {{}} |
-| text / muted | {{}} |
-| border | {{}} |
-| primary | {{}} |
-| accent | {{}} |
-| success / warning / danger | {{}} |
+| background | #f4f8f6 |
+| surface | #ffffff |
+| text / muted | #173b38 / #5d716e |
+| border | #c8ded8 |
+| primary | #0f766e |
+| accent | #d2e8e2 |
+| success / warning / danger | #0f766e / #a46d12 / #c23a38 |
 
 ## Typography
-- Headings: {{font}}
-- Body: {{font}}
+- Headings: system-ui, semibold to bold
+- Body: system-ui
 
 ## Tokens & primitives
-- Radius / shadow / spacing rhythm: {{}}
-- Shared components: {{Button, Card, Input, …}}
+- Radius / shadow / spacing rhythm: 14–16px cards, low-contrast shadows, generous touch spacing, 44px minimum controls
+- Shared components: buttons, inputs, selects, checkboxes, accessible dialogs, status badges, form sections
 
 ## Voice & tone
-{{how the product speaks — e.g. "plain, confident, no hype"}}
+Español directo y operativo: instrucciones breves, validación útil y sin datos inventados.
