@@ -1,5 +1,7 @@
 "use client";
 
+import { Clock3 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +15,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { FieldShell } from "@/components/dispatch/FieldShell";
 import type { DispatchField } from "@/lib/dispatch-model";
+
+function getDeviceTime(): string {
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+}
 
 interface DispatchFormFieldProps {
   field: DispatchField;
@@ -101,18 +108,40 @@ export function DispatchFormField({
 
   return (
     <FieldShell field={field} inputId={id} error={error}>
-      <Input
-        id={id}
-        type={inputType}
-        inputMode={inputMode}
-        min={field.tipo === "numero" || field.tipo === "decimal" ? 0 : undefined}
-        step={field.tipo === "decimal" ? "any" : field.tipo === "numero" ? 1 : undefined}
-        maxLength={field.maxlength}
-        value={textValue}
-        onChange={(event) => onChange(field.id, event.target.value)}
-        className={fieldClass}
-        aria-invalid={isInvalid}
-      />
+      {inputType === "time" ? (
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+          <Input
+            id={id}
+            type={inputType}
+            value={textValue}
+            onChange={(event) => onChange(field.id, event.target.value)}
+            className={fieldClass}
+            aria-invalid={isInvalid}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onChange(field.id, getDeviceTime())}
+            aria-label={`Capturar hora actual para ${field.etiqueta}`}
+            className="min-h-12 gap-2 px-3"
+          >
+            <Clock3 size={16} /> Ahora
+          </Button>
+        </div>
+      ) : (
+        <Input
+          id={id}
+          type={inputType}
+          inputMode={inputMode}
+          min={field.tipo === "numero" || field.tipo === "decimal" ? 0 : undefined}
+          step={field.tipo === "decimal" ? "any" : field.tipo === "numero" ? 1 : undefined}
+          maxLength={field.maxlength}
+          value={textValue}
+          onChange={(event) => onChange(field.id, event.target.value)}
+          className={fieldClass}
+          aria-invalid={isInvalid}
+        />
+      )}
     </FieldShell>
   );
 }
